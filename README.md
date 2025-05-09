@@ -1,6 +1,6 @@
 # Septoria Lesion Growth
 
-![Alt text](ProjectOverview.jpg)
+![Alt text](Imgs/ProjectOverview.jpg)
 
 This repository contains code to reproduce numeric results, figures, and tables reported in [todo: add link to preprint].
 
