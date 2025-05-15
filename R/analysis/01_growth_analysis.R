@@ -886,7 +886,7 @@ predictions <- qr_models4 %>%
   unnest(cols = c(new_data, predicted_qr, predicted_qr_sqrt, predicted_lpqr))
 
 # New facet label names for direction variable
-dir_labs <- c("None", "X (Major leaf axis)", "XY (Major + Minor leaf axes)", "Y (Minor leaf axis")
+dir_labs <- c("Absolute growth", "X (Major leaf axis)", "XY (Major + Minor leaf axes)", "Y (Minor leaf axis)")
 names(dir_labs) <- c("diff_area_norm_gdd", "diff_area_pp_x_norm_gdd", "diff_area_pp_xy_norm_gdd", "diff_area_pp_y_norm_gdd")
 p0 <- ggplot() +
   geom_point(data = pdat, aes(x = area, y = value), alpha = 0.02) +
@@ -896,12 +896,11 @@ p0 <- ggplot() +
   scale_y_continuous(
     name = bquote("Lesion growth (" ~ A[t[1]] - A[t[0]] ~ ")")) +
   scale_x_continuous(limits = c(0, 50), 
-                     name = bquote("Lesion area at"~t[0]~" (mm" ^2~")")) +
+                     name = bquote("Lesion area at"~t[0]~"(mm" ^2~")")) +
   facet_wrap(~ name, scales = "free", nrow = 1,
              labeller = labeller(name = dir_labs)) +
   geom_text(data = qr_models4, aes(x = Inf, y = Inf, label = paste0("R²: ", round(r2, 2))),
-            hjust = 1.1, vjust = 1.1, inherit.aes = FALSE) +
-  ggtitle("A")
+            hjust = 1.1, vjust = 1.1, inherit.aes = FALSE)
 
 # sqrt
 p <- p0 +
@@ -1236,7 +1235,7 @@ predictions <- qr_models2 %>%
   unnest(cols = c(new_data, predicted_qr, predicted_lpqr))
 
 # New facet label names for direction variable
-dir_labs <- c("Maximum Pyn Distance", "Minimum Pycn Density on Perimeter", "Variance Pycn Distance")
+dir_labs <- c("Maximum Pycn Distance", "Minimum Pycn Density on Perimeter", "Variance Pycn Distance")
 names(dir_labs) <- c("lag_max_dist", "lag_min_l_density", "lag_variance_dist")
 
 p2 <- ggplot() +
@@ -1270,7 +1269,7 @@ a <- ggplot(data = pd) +
   scale_fill_manual(
     values = c("1" = colors[1], "2" = colors[2])) +
   scale_x_discrete(name = "Batch") +
-  scale_y_continuous(name = "log(Maximum Distance") +
+  scale_y_continuous(name = "log(Maximum Distance)") +
   ggtitle("A") +
   theme_bw() +
   theme(panel.grid = element_blank(),
@@ -1283,7 +1282,7 @@ b <- ggplot(data = pd) +
   geom_jitter(aes(x = genotype_name, y = log(lag_max_dist), fill = "grey95"), alpha = 0.025) +
   ggtitle("B") +
   xlab("Host cultivar") +
-  scale_y_continuous(name = "log(Maximum Distance") +
+  scale_y_continuous(name = "log(Maximum Distance)") +
   theme_bw() +
   theme(panel.grid = element_blank(),
         legend.position = "None",

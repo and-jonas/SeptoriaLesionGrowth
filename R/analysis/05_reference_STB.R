@@ -275,42 +275,48 @@ write.csv(genoblups,
 
 # >> Visual scoring data ----
 
-# get raw plot visual scoring data
-scordat <- read_excel(paste0(data_path, "stb_scoring_data.xlsx"), 
-                      sheet = 1, skip = 3)
+# # get raw plot visual scoring data
+# scordat <- read_excel(paste0(data_path, "stb_scoring_data.xlsx"), 
+#                       sheet = 1, skip = 3)
+# 
+# # get rid of unwanted rows
+# scordat <- scordat %>% 
+#   dplyr::filter(!plot %in% c("TEM", "lot3")) %>%
+#   dplyr::filter(!is.na(plot)) %>% 
+#   dplyr::filter(!is.na(nosemis)) %>% 
+#   mutate(plot = as.numeric(plot))
+# 
+# # still some non-unique plots
+# # duplicate for 787, but 788 is missing
+# # one 176 in place of 716
+# # I assume these are errors from manually preparing the table and correct them
+# scordat[634, ]$plot <- 716
+# scordat[706, ]$plot <- 788
+# 
+# # re-format
+# scordat <- scordat %>% 
+#   dplyr::select(3, 4, 5, 7, 9) %>% 
+#   rename("20160520" = 3,
+#          "20160621" = 4,
+#          "20160629" = 5)
+# 
+# # calculate AUDPC (what is the reference date ? taken from Fabio)
+# audpc <- scordat %>% 
+#   mutate(AUDPC = `20160520`*4/2+((`20160520`+`20160621`)*(44-4)/2)+((`20160621`+`20160629`)*(52-44)/2)) %>% 
+#   dplyr::select(plot, AUDPC)
+# 
+# # add experimental design
+# design <- read_xls(paste0(data_path, "meta/scoring_data_design.xls"),
+#                    sheet = 4, skip = 5) %>% 
+#   dplyr::select(Plot_ID, Plot, Lot, RangeLot, RowLot, Gen_Name, Gen_ID, Checks)
+# scdat <- left_join(design, audpc, by = c("Plot" = "plot"))
+# # 720 rows, OK. 
+# 
+# write.csv(scdat, 
+#           paste0(data_path, "stb_scoring_data.csv"),
+#           row.names = F)
 
-# get rid of unwanted rows
-scordat <- scordat %>% 
-  dplyr::filter(!plot %in% c("TEM", "lot3")) %>%
-  dplyr::filter(!is.na(plot)) %>% 
-  dplyr::filter(!is.na(nosemis)) %>% 
-  mutate(plot = as.numeric(plot))
-
-# still some non-unique plots
-# duplicate for 787, but 788 is missing
-# one 176 in place of 716
-# I assume these are errors from manually preparing the table and correct them
-scordat[634, ]$plot <- 716
-scordat[706, ]$plot <- 788
-
-# re-format
-scordat <- scordat %>% 
-  dplyr::select(3, 4, 5, 7, 9) %>% 
-  rename("20160520" = 3,
-         "20160621" = 4,
-         "20160629" = 5)
-
-# calculate AUDPC (what is the reference date ? taken from Fabio)
-audpc <- scordat %>% 
-  mutate(AUDPC = `20160520`*4/2+((`20160520`+`20160621`)*(44-4)/2)+((`20160621`+`20160629`)*(52-44)/2)) %>% 
-  dplyr::select(plot, AUDPC)
-
-# add experimental design
-design <- read_xls(paste0(data_path, "meta/scoring_data_design.xls"),
-                   sheet = 4, skip = 5) %>% 
-  dplyr::select(Plot_ID, Plot, Lot, RangeLot, RowLot, Gen_Name, Gen_ID, Checks)
-scdat <- left_join(design, audpc, by = c("Plot" = "plot"))
-# 720 rows, OK. 
+scdat <- read_csv(paste0(data_path, "stb_scoring_data.csv"))
 
 # make grid gap between lots
 moddat <- scdat %>% 
@@ -435,7 +441,7 @@ p1 <- ggplot(data_all, aes(x = pred_sev, y = pred_inc)) +
   geom_smooth(data = data_nooutlier, method = "lm", se = FALSE, lty = 2, color = "slateblue") +
   annotate("text", x = min(data_all$pred_sev, na.rm = T), y = max(data_all$pred_inc, na.rm = T), 
            label = label1, hjust = 0, vjust = 1, size = 3) +
-  annotate("text", x = min(data_all$pred_sev, na.rm = T), y = 0.92*max(data_all$pred_inc, na.rm = T), 
+  annotate("text", x = min(data_all$pred_sev, na.rm = T), y = 0.85*max(data_all$pred_inc, na.rm = T), 
            label = label1_2, hjust = 0, vjust = 1, color = "slateblue", size = 3) +
   labs(x = "Conditional Severity", y = "Incidence") +
   scale_color_identity() +  ggtitle("A") +
@@ -451,7 +457,7 @@ p2 <- ggplot(data_all, aes(x = pred_sev, y = pred_growth)) +
   geom_smooth(data = data_nooutlier, method = "lm", se = FALSE, lty = 2, color = "slateblue") +
   annotate("text", x = min(data_all$pred_sev, na.rm = T), y = max(data_all$pred_growth, na.rm = T), 
            label = label2, hjust = 0, vjust = 0, size = 3) +
-  annotate("text", x = min(data_all$pred_sev, na.rm = T), y = 0.97*max(data_all$pred_growth, na.rm = T), 
+  annotate("text", x = min(data_all$pred_sev, na.rm = T), y = 0.96*max(data_all$pred_growth, na.rm = T), 
            label = label2_2, hjust = 0, vjust = 0, color = "slateblue", size = 3) +
   labs(x = "Conditional Severity", y = "Lesion Growth") +
   scale_y_continuous(limits = c(0.0006, 0.001)) +
@@ -469,7 +475,7 @@ p3 <- ggplot(data_all, aes(x = pred_inc, y = pred_growth)) +
   geom_smooth(data = data_nooutlier, method = "lm", se = FALSE, lty = 2, color = "slateblue") +
   annotate("text", x = min(data_all$pred_inc, na.rm = T), y = max(data_all$pred_growth, na.rm = T), 
            label = label3, hjust = 0, vjust = 0, size = 3) +
-  annotate("text", x = min(data_all$pred_inc, na.rm = T), y = 0.97*max(data_all$pred_growth, na.rm = T), 
+  annotate("text", x = min(data_all$pred_inc, na.rm = T), y = 0.96*max(data_all$pred_growth, na.rm = T), 
            label = label3_2, hjust = 0, vjust = 0, color = "slateblue", size = 3) +
   labs(x = "Incidence", y = "Lesion Growth") + 
   scale_color_identity() + 
@@ -546,7 +552,7 @@ label_df_nooutlier <- pdat_nooutlier %>%
   dplyr::select(-data)
 # for facet names
 trait_labels <- c(slope_age = "Lesion Age", 
-                  slope_rh = "Relative Humdity",
+                  slope_rh = "Relative Humidity",
                   slope_temp = "Temperature")
 p6 <- ggplot(pdat_all, aes(x = value, y = pred_sev)) +
   geom_point(aes(color = ifelse(genotype_name == "AUBUSSON", "red", "black"))) +
@@ -588,7 +594,7 @@ label_df_nooutlier <- pdat_nooutlier %>%
   dplyr::select(-data)
 # for facet names
 trait_labels <- c(slope_age = "Lesion Age", 
-                  slope_rh = "Relative Humdity",
+                  slope_rh = "Relative Humidity",
                   slope_temp = "Temperature")
 p7 <- ggplot(pdat_all, aes(x = value, y = pred_growth)) +
   geom_point(aes(color = ifelse(genotype_name == "AUBUSSON", "red", "black"))) +

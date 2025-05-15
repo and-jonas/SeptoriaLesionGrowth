@@ -195,7 +195,17 @@ df_temp_resp <- predict(m3_rh_temp, classify = "genotype_name:mean_temp:mean_rh:
 plt1 <- ggplot(data=df_temp_resp, aes(x=mean_temp, y=predicted.value, color=as.factor(age), linetype=as.factor(mean_rh))) +
   geom_line(size=1) +
   facet_grid(~genotype_name) +
-  scale_color_brewer(type="qual")
+  scale_color_brewer(type="qual") + 
+  labs(
+    color = "Lesion age (hours)", 
+    linetype = "Mean relative humidity (%)"
+  ) +
+  ylab("Predicted lesion growth") +
+  xlab("Mean interval temperature (°C)") +
+  theme(legend.position = "bottom")
+png(paste0(figure_path, "slopes_temp.png"), width = 12, height = 4, units = 'in', res = 400)
+plot(plt1)
+dev.off()
 
 # Correlations of genotype-interaction effects
 df_corrs <-
