@@ -19,7 +19,7 @@ The mixed model analyses in this project rely on the `ASReml-R package`, which i
 
 ## Data
 Data is available via the ETH Zürich publications and research data repository:
-[todo: Add link]
+https://doi.org/10.3929/ethz-b-000735494
 
 ## Reproducing the Analysis
 To reproduce the analysis, execute the scripts in the order indicated by their numerical prefixes. Many scripts depend on outputs generated in earlier steps, so it is important to follow the sequence.
